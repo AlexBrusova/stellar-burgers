@@ -50,9 +50,9 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     isAuthed: false,
-    user: {},
+    user: { email: '', name: '' },
     error: ''
-  } as TUserStore,
+  },
   reducers: {},
   selectors: {
     isAuthedSelector: (state) => state.isAuthed,
@@ -107,6 +107,7 @@ export const userSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.isAuthed = false;
         state.user = { email: '', name: '' };
+        state.error = '';
       });
   }
 });

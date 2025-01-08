@@ -1,4 +1,20 @@
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import {
+  Action,
+  combineReducers,
+  configureStore,
+  ThunkAction
+} from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 import {
   TypedUseSelectorHook,
@@ -13,16 +29,32 @@ import {
   userReducer
 } from '@slices';
 
-const store = configureStore({
-  reducer: {
+const persistedReducer = persistReducer(
+  {
+    key: 'root',
+    version: 1,
+    storage
+  },
+  combineReducers({
     ingredients: ingredientsReducer,
     feeds: feedsReducer,
     orders: ordersReducer,
     burgerConstructor: burgerConstructorReducer,
     user: userReducer
-  },
+  })
+);
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    }),
   devTools: process.env.NODE_ENV !== 'production'
 });
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 

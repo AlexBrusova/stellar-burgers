@@ -2,12 +2,13 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import store, { useDispatch, useSelector } from '@store';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder, resetOrder, selectIngredients } from '@slices';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { buns, mains, sauces } = selectIngredients(store.getState());
   const isAuthed = useSelector((store) => store.user.isAuthed);
   const orderRequest = useSelector((store) => store.orders.creating);

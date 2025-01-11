@@ -57,13 +57,15 @@ export const ordersSlice = createSlice({
         state.loading = true;
       })
       .addCase(loadOrder.fulfilled, (state, action) => {
+        let orderExist = false;
         state.loading = false;
-        state.orders = state.orders.map((o) =>
-          o.number === action.payload.orders[0].number
-            ? action.payload.orders[0]
-            : o
-        );
-        state.created = action.payload.orders[0];
+        state.orders = state.orders.map((o) => {
+          if (o.number === action.payload.orders[0].number) {
+            orderExist = true;
+          }
+          return orderExist ? action.payload.orders[0] : o;
+        });
+        if (!orderExist) state.orders.push(action.payload.orders[0]);
       })
       .addCase(createOrder.pending, (state) => {
         state.creating = true;

@@ -88,6 +88,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         htmlType='button'
         type='primary'
         size='large'
+        data-test='create_order_button'
         children='Оформить заказ'
         onClick={onOrderClick}
       />

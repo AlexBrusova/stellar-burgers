@@ -39,12 +39,15 @@ export const feedsSlice = createSlice({
         state.loading = true;
       })
       .addCase(loadOrder.fulfilled, (state, action) => {
+        let orderExist = false;
         state.loading = false;
-        state.orders = state.orders.map((o) =>
-          o.number === action.payload.orders[0].number
-            ? action.payload.orders[0]
-            : o
-        );
+        state.orders = state.orders.map((o) => {
+          if (o.number === action.payload.orders[0].number) {
+            orderExist = true;
+          }
+          return orderExist ? action.payload.orders[0] : o;
+        });
+        if (!orderExist) state.orders.push(action.payload.orders[0]);
       });
   }
 });

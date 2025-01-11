@@ -19,14 +19,16 @@ export const selectors = {
   close_modal: '[data-test="close-modal"]',
   close_overlay_modal: '[data-test="close-overlay-modal"]',
   constructor_container: '[data-test="constructor-container"]',
-  order_button: 'Оформить заказ',
-  login_page_text: 'Вход',
-  order_modal_text: 'Ваш заказ начали готовить'
+  order_button: '[data-test="create_order_button"]',
+  created_order_number: '[data-test="created_order_number"]',
+  input_username: '[data-test="input_username"]',
+  login_button: '[data-test="login_button"]',
+  input_password: '[data-test="input_password"]'
 };
 
 export const api = {
   order: base_url + 'orders',
+  orders: base_url + 'orders/all',
   ingredients: base_url + 'ingredients',
-  // order: base_url + 'orders',
   login: base_url + 'auth/login'
 };

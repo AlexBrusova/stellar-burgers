@@ -29,19 +29,20 @@ import {
   userReducer
 } from '@slices';
 
+export const rootReducer = combineReducers({
+  ingredients: ingredientsReducer,
+  feeds: feedsReducer,
+  orders: ordersReducer,
+  burgerConstructor: burgerConstructorReducer,
+  user: userReducer
+});
 const persistedReducer = persistReducer(
   {
     key: 'root',
     version: 1,
     storage
   },
-  combineReducers({
-    ingredients: ingredientsReducer,
-    feeds: feedsReducer,
-    orders: ordersReducer,
-    burgerConstructor: burgerConstructorReducer,
-    user: userReducer
-  })
+  rootReducer
 );
 
 const store = configureStore({

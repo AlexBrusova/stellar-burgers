@@ -35,6 +35,9 @@ export const LoginUI: FC<LoginUIProps> = ({
               error={false}
               errorText=''
               size='default'
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
+              data-test='input_username'
             />
           </div>
           <div className='pb-6'>
@@ -42,10 +45,16 @@ export const LoginUI: FC<LoginUIProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               name='password'
+              data-test='input_password'
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
-            <Button type='primary' size='medium' htmlType='submit'>
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              data-test='login_button'
+            >
               Войти
             </Button>
           </div>

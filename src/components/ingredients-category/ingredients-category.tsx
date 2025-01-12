@@ -2,27 +2,32 @@ import { forwardRef, useMemo } from 'react';
 import { TIngredientsCategoryProps } from './type';
 import { TIngredient } from '@utils-types';
 import { IngredientsCategoryUI } from '../ui/ingredients-category';
+import { useSelector } from '@store';
 
 export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
 >(({ title, titleRef, ingredients }, ref) => {
-  /** TODO: взять переменную из стора */
+  const bun = useSelector((store) => store.burgerConstructor.bunId);
+  const ingredientsIds = useSelector(
+    (store) => store.burgerConstructor.ingredientsIds
+  );
   const burgerConstructor = {
-    bun: {
-      _id: ''
-    },
-    ingredients: []
+    bun,
+    ingredientsIds
   };
 
   const ingredientsCounters = useMemo(() => {
-    const { bun, ingredients } = burgerConstructor;
-    const counters: { [key: string]: number } = {};
-    ingredients.forEach((ingredient: TIngredient) => {
-      if (!counters[ingredient._id]) counters[ingredient._id] = 0;
-      counters[ingredient._id]++;
-    });
-    if (bun) counters[bun._id] = 2;
+    const { bun, ingredientsIds } = burgerConstructor;
+    const counters: { [key: string]: number } = ingredientsIds.reduce(
+      (res, id) => {
+        const [ingredientId] = id.split('_');
+        res[ingredientId] = (res[ingredientId] || 0) + 1;
+        return res;
+      },
+      {} as { [key: string]: number }
+    );
+    if (bun) counters[bun] = 2;
     return counters;
   }, [burgerConstructor]);
 

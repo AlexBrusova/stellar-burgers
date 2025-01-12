@@ -1,24 +1,58 @@
 import { FC, useMemo } from 'react';
-import { TConstructorIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import store, { useDispatch, useSelector } from '@store';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { createOrder, resetOrder, selectIngredients } from '@slices';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { buns, mains, sauces } = selectIngredients(store.getState());
+  const isAuthed = useSelector((store) => store.user.isAuthed);
+  const orderRequest = useSelector((store) => store.orders.creating);
+  const orderModalData = useSelector((store) => store.orders.created);
+  const bun = useSelector((store) => store.burgerConstructor.bunId);
+  const ingredientsIds = useSelector(
+    (store) => store.burgerConstructor.ingredientsIds
+  );
+  const constructorItems: {
+    bun?: TIngredient;
+    ingredients: TConstructorIngredient[];
+  } = {
+    bun: buns.find((b) => b._id === bun),
+    ingredients: ingredientsIds.map((id) => {
+      const [ingredientId] = id.split('_');
+      return {
+        ...[...mains, ...sauces].find((i) => ingredientId === i._id),
+        id
+      };
+    }) as TConstructorIngredient[]
   };
-
-  const orderRequest = false;
-
-  const orderModalData = null;
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (
+      !constructorItems.bun ||
+      !constructorItems.ingredients?.length ||
+      orderRequest
+    )
+      return;
+    if (!isAuthed) {
+      navigate('/login', { replace: true, state: { from: location } });
+      return;
+    }
+    dispatch(
+      createOrder(
+        [constructorItems.bun, ...constructorItems.ingredients].map(
+          (i) => (i as TIngredient)._id
+        )
+      )
+    );
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    dispatch(resetOrder());
+  };
 
   const price = useMemo(
     () =>
@@ -29,8 +63,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  return null;
 
   return (
     <BurgerConstructorUI

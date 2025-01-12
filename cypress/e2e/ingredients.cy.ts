@@ -22,20 +22,59 @@ describe('Бургер-конструктор', () => {
     cy.wait(['@orders']);
   });
 
+  afterEach(() => {
+    cy.clearAllCookies();
+    cy.clearAllLocalStorage();
+  });
+
   it('Добавление ингредиентов в бургер', () => {
     cy.get(selectors.add_ingredient_bun).click();
+    cy.get(selectors.add_ingredient_bun)
+      .parent()
+      .prev()
+      .then(($el) => {
+        const name = $el.children().last().text();
+        cy.get(selectors.constructor_ingredient_bun)
+          .should('have.length', 2)
+          .invoke('text')
+          .should('match', new RegExp(`.*${name}.*`));
+      });
     cy.get(selectors.add_ingredient_sauce).click();
+    cy.get(selectors.add_ingredient_sauce)
+      .parent()
+      .prev()
+      .then(($el) => {
+        const name = $el.children().last().text();
+        cy.get(selectors.constructor_ingredient_sauce)
+          .should('be.visible')
+          .invoke('text')
+          .should('match', new RegExp(`.*${name}.*`));
+      });
     cy.get(selectors.add_ingredient_main).click();
-    cy.get(selectors.constructor_ingredient_bun).should('have.length', 2);
-    cy.get(selectors.constructor_ingredient_sauce).should('be.visible');
-    cy.get(selectors.constructor_ingredient_main).should('be.visible');
+    cy.get(selectors.add_ingredient_main)
+      .parent()
+      .prev()
+      .then(($el) => {
+        const name = $el.children().last().text();
+        cy.get(selectors.constructor_ingredient_main)
+          .should('be.visible')
+          .invoke('text')
+          .should('match', new RegExp(`.*${name}.*`));
+      });
   });
 
   it('Попап с деталями ингредиента', () => {
-    cy.get(selectors.ingredient_bun).click();
-    cy.get(selectors.close_modal).should('be.visible');
-    cy.get(selectors.close_modal).click();
-    cy.get(selectors.close_modal).should('not.exist');
+    cy.get(selectors.ingredient_bun)
+      .children()
+      .last()
+      .then(($el) => {
+        const bunName = $el.text();
+        cy.get(selectors.ingredient_bun).click();
+        cy.get(selectors.close_modal).should('be.visible');
+        cy.get(selectors.ingredient_detail).contains(bunName);
+        cy.get(selectors.close_modal).click();
+        cy.get(selectors.close_modal).should('not.exist');
+      });
   });
 
   it('Попап с деталями ингредиента, клик на оверлэй', () => {

@@ -1,6 +1,7 @@
 const base_url = 'https://norma.nomoreparties.space/api/';
 
 export const selectors = {
+  ingredient_detail: '[data-test="ingredient_detail"]',
   ingredient_bun: '[data-test="ingredient_643d69a5c3f7b9001cfa093c"]',
   ingredient_sauce: '[data-test="ingredient_643d69a5c3f7b9001cfa0944"]',
   ingredient_main: '[data-test="ingredient_643d69a5c3f7b9001cfa0941"]',
